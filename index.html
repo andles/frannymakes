@@ -894,6 +894,7 @@
       <li><a href="#shop">Shop</a></li>
       <li><a href="#about">About Franny</a></li>
       <li><a href="#how">How It Works</a></li>
+      <li><a href="#reviews">Reviews</a></li>
     </ul>
     <button class="cart-btn" onclick="toggleCart()">
       <span style="font-family: 'DM Sans', sans-serif;">Cart</span> <span class="cart-count" id="cartCount">0</span>
@@ -1034,6 +1035,29 @@
       <div class="how-num">3</div>
       <h3>Shipped to You</h3>
       <p>Your doll arrives wrapped in tissue paper with a little note from Franny herself! Only $3.00 in shipping!</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== REVIEWS ===== -->
+<section style="background: var(--warm-white); padding: 4rem 2rem;" id="reviews">
+  <div class="section-header">
+    <h2>Reviews</h2>
+    <p>What do people think of Franny's dolls?</p>
+  </div>
+  <div style="max-width: 700px; margin: 0 auto;">
+    <div id="reviewsList" style="margin-bottom: 2rem;"></div>
+    <div style="background: var(--cream); border-radius: 20px; padding: 2rem; border: 2px dashed var(--stitch);">
+      <h3 style="font-family: 'Caveat', cursive; font-size: 1.8rem; color: var(--cocoa-dark); margin-bottom: 1rem;">Leave a Review</h3>
+      <input type="text" id="reviewName" placeholder="Your name" style="width: 100%; padding: 0.85rem 1.2rem; border: 2px solid var(--blush); border-radius: 28px; font-family: 'Caveat', cursive; font-size: 1.1rem; background: var(--warm-white); color: var(--text-dark); outline: none; margin-bottom: 0.75rem; box-sizing: border-box;">
+      <div style="margin-bottom: 0.75rem;">
+        <span style="font-family: 'Caveat', cursive; font-size: 1.2rem; color: var(--text-mid); margin-right: 0.5rem;">Rating:</span>
+        <span id="starPicker" style="font-size: 1.5rem; cursor: pointer;">
+          <span onclick="pickStars(1)">☆</span><span onclick="pickStars(2)">☆</span><span onclick="pickStars(3)">☆</span><span onclick="pickStars(4)">☆</span><span onclick="pickStars(5)">☆</span>
+        </span>
+      </div>
+      <textarea id="reviewText" placeholder="What did you think of your doll?" style="width: 100%; padding: 0.85rem 1.2rem; border: 2px solid var(--blush); border-radius: 16px; font-family: 'Caveat', cursive; font-size: 1.1rem; background: var(--warm-white); color: var(--text-dark); outline: none; margin-bottom: 1rem; box-sizing: border-box; height: 100px; resize: vertical;"></textarea>
+      <button onclick="submitReview()" style="background: var(--sage); color: white; border: none; padding: 0.85rem 2rem; border-radius: 28px; font-family: 'Caveat', cursive; font-weight: 700; font-size: 1.1rem; cursor: pointer;">Submit Review 🦋</button>
     </div>
   </div>
 </section>
@@ -1195,6 +1219,47 @@
     document.getElementById('checkoutForm').style.display = 'none';
     toggleCart();
     showToast('Venmo opened! Thanks for your order!');
+  }
+
+  let selectedStars = 0;
+  let reviews = [];
+
+  function pickStars(n) {
+    selectedStars = n;
+    const stars = document.getElementById('starPicker').children;
+    for (let i = 0; i < 5; i++) {
+      stars[i].textContent = i < n ? '★' : '☆';
+    }
+  }
+
+  function submitReview() {
+    const name = document.getElementById('reviewName').value;
+    const text = document.getElementById('reviewText').value;
+    if (!name) { alert('Please enter your name!'); return; }
+    if (!selectedStars) { alert('Please pick a star rating!'); return; }
+    if (!text) { alert('Please write a review!'); return; }
+    reviews.push({ name, stars: selectedStars, text });
+    renderReviews();
+    // Send to Franny's email
+    window.location.href = `mailto:Andykj@gmail.com?subject=New Review from ${name}&body=${encodeURIComponent(`${name} left a ${selectedStars}-star review:\n\n"${text}"`)}`;
+    // Reset form
+    document.getElementById('reviewName').value = '';
+    document.getElementById('reviewText').value = '';
+    pickStars(0);
+    selectedStars = 0;
+    showToast('Review submitted! Thanks!');
+  }
+
+  function renderReviews() {
+    const el = document.getElementById('reviewsList');
+    if (reviews.length === 0) { el.innerHTML = ''; return; }
+    el.innerHTML = reviews.map(r => `
+      <div style="background: var(--warm-white); padding: 1.5rem; border-radius: 16px; margin-bottom: 1rem; border: 1px solid var(--blush);">
+        <div style="color: var(--honey); font-size: 1.3rem; letter-spacing: 2px; margin-bottom: 0.5rem;">${'★'.repeat(r.stars)}${'☆'.repeat(5 - r.stars)}</div>
+        <p style="font-style: italic; color: var(--text-mid); margin-bottom: 0.5rem; font-size: 1.1rem;">"${r.text}"</p>
+        <span style="font-weight: 600; color: var(--cocoa); font-size: 1rem;">— ${r.name}</span>
+      </div>
+    `).join('');
   }
 
   function requestCustomDoll() {
