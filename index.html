@@ -937,60 +937,64 @@
   <div class="product-grid">
     <!-- Liz -->
     <div class="product-card">
+      <div class="product-badge" style="background: #E85D5D; color: white;">SOLD OUT</div>
       <div class="product-img" style="background: #FFF0F3; padding: 0;">
-        <img src="liz.jpg" alt="Liz doll" style="width: 100%; height: 100%; object-fit: cover;">
+        <img src="liz.jpg" alt="Liz doll" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.6;">
       </div>
       <div class="product-info">
         <div class="product-name">Liz</div>
         <div class="product-desc">A puurrrrrfect doll for cat lovers! She is very cuddly and nice!</div>
         <div class="product-footer">
           <span class="product-price">$10.00</span>
-          <button class="add-to-cart" onclick="addToCart('Liz', 10.00, '#F2C4B3', 'liz.jpg')">Add to Cart</button>
+          <button class="add-to-cart" disabled style="opacity: 0.5; cursor: not-allowed;">Sold Out</button>
         </div>
       </div>
     </div>
 
     <!-- Lavender -->
     <div class="product-card">
+      <div class="product-badge" style="background: #E85D5D; color: white;">SOLD OUT</div>
       <div class="product-img" style="background: #FFF0F3; padding: 0;">
-        <img src="Lavender.jpg" alt="Lavender doll" style="width: 100%; height: 100%; object-fit: cover;">
+        <img src="Lavender.jpg" alt="Lavender doll" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.6;">
       </div>
       <div class="product-info">
         <div class="product-name">Lavender</div>
         <div class="product-desc">A lovely rabbit with a big heart. So big you can almost see it!</div>
         <div class="product-footer">
           <span class="product-price">$10.00</span>
-          <button class="add-to-cart" onclick="addToCart('Lavender', 10.00, '#E8998D', 'Lavender.jpg')">Add to Cart</button>
+          <button class="add-to-cart" disabled style="opacity: 0.5; cursor: not-allowed;">Sold Out</button>
         </div>
       </div>
     </div>
 
     <!-- Max -->
     <div class="product-card">
+      <div class="product-badge" style="background: #E85D5D; color: white;">SOLD OUT</div>
       <div class="product-img" style="background: #FFF0F3; padding: 0;">
-        <img src="MAX.jpg" alt="Max doll" style="width: 100%; height: 100%; object-fit: cover;">
+        <img src="MAX.jpg" alt="Max doll" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.6;">
       </div>
       <div class="product-info">
         <div class="product-name">Max</div>
         <div class="product-desc">A beary friendly bear! He's a little stubby though, so don't make fun of him!</div>
         <div class="product-footer">
           <span class="product-price">$10.00</span>
-          <button class="add-to-cart" onclick="addToCart('Max', 10.00, '#7D9171', 'MAX.jpg')">Add to Cart</button>
+          <button class="add-to-cart" disabled style="opacity: 0.5; cursor: not-allowed;">Sold Out</button>
         </div>
       </div>
     </div>
 
     <!-- Pillow -->
     <div class="product-card">
+      <div class="product-badge" style="background: #E85D5D; color: white;">SOLD OUT</div>
       <div class="product-img" style="background: #FFF0F3; padding: 0;">
-        <img src="PILLOW.jpg" alt="Pillow" style="width: 100%; height: 100%; object-fit: cover;">
+        <img src="PILLOW.jpg" alt="Pillow" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.6;">
       </div>
       <div class="product-info">
         <div class="product-name">Pillow</div>
         <div class="product-desc">A soft pillow for your doll, pet etc! Sewed with love.</div>
         <div class="product-footer">
           <span class="product-price">$10.00</span>
-          <button class="add-to-cart" onclick="addToCart('Pillow', 10.00, '#F2C4B3', 'PILLOW.jpg')">Add to Cart</button>
+          <button class="add-to-cart" disabled style="opacity: 0.5; cursor: not-allowed;">Sold Out</button>
         </div>
       </div>
     </div>
@@ -1222,7 +1226,11 @@
   }
 
   let selectedStars = 0;
-  let reviews = [];
+  let reviews = JSON.parse(localStorage.getItem('frannyReviews') || '[]');
+
+  function saveReviews() {
+    localStorage.setItem('frannyReviews', JSON.stringify(reviews));
+  }
 
   function pickStars(n) {
     selectedStars = n;
@@ -1239,6 +1247,7 @@
     if (!selectedStars) { alert('Please pick a star rating!'); return; }
     if (!text) { alert('Please write a review!'); return; }
     reviews.push({ name, stars: selectedStars, text });
+    saveReviews();
     renderReviews();
     // Send to Franny's email
     window.location.href = `mailto:Andykj@gmail.com?subject=New Review from ${name}&body=${encodeURIComponent(`${name} left a ${selectedStars}-star review:\n\n"${text}"`)}`;
@@ -1261,6 +1270,9 @@
       </div>
     `).join('');
   }
+
+  // Load saved reviews on page load
+  renderReviews();
 
   function requestCustomDoll() {
     const email = prompt('Enter your email address:');
