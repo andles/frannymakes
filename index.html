@@ -1284,6 +1284,11 @@
     btn.style.cursor = 'pointer';
     btn.textContent = 'Add to Cart';
     btn.onclick = function() { addToCart('Lavender', 10.00, '#E8998D', 'Lavender.jpg'); };
+    // Add secret notice at the bottom of the page
+    const notice = document.createElement('div');
+    notice.style.cssText = 'text-align: center; padding: 1.5rem; color: #E85D5D; font-size: 1.1rem; font-weight: 600;';
+    notice.textContent = "you can't actually get these mailed to you btw";
+    document.querySelector('footer').before(notice);
   }
 
   function requestCustomDoll() {
